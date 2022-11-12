@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+
+  ubunto-ros:
+    image: jontavpess/ros-project
+    container_name: ubunto-ros
+    stdin_open: true
+    tty: true
