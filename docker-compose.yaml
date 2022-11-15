@@ -3,7 +3,13 @@ version: '3.8'
 services:
 
   ubunto-ros:
-    image: jontavpess/ros-project
+    image: jontavpess/ros-project-cuda
     container_name: ubunto-ros
     stdin_open: true
     tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]

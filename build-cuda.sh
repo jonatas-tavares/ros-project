@@ -1,0 +1,1 @@
+docker build -f Cuda.Dockerfile -t jontavpess/ros-project-cuda .

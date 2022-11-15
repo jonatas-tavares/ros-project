@@ -1,0 +1,71 @@
+FROM jontavpess/ros-project-image-base
+
+RUN apt -y install git-all gedit
+
+ENV DISPLAY=host.docker.internal:0.0
+
+#ENV TZ=America/Sao_Paulo
+
+#ENV PATH $PATH:/opt/ros/melodic/
+# SHELL ["/bin/bash", "-c"] 
+
+#RUN apt-get -y install python3
+
+COPY ./bootstrap.sh /
+
+#ENTRYPOINT ["/bin/bash", "-c", "/bootstrap.sh"]
+
+# CMD /bin/bash -i -c "source /root/.bashrc && /bootstrap.bash"
+
+RUN sed -e '/[ -z "$PS1" ] && return/s/^/#/g' -i /root/.bashrc
+RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+RUN echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
+
+# CMD /bin/bash -l -i -c "source /root/.bashrc && /bootstrap.sh"
+
+CMD /bin/bash -l -i -c "/bootstrap.sh"
+
+# RUN source /root/.bashrc && /workspace/launch.sh
+
+# CMD [ "/bin/bash", "-l", "-c", "/bootstrap.sh" ]
+
+# CMD /bin/bash -c \
+#     "source /opt/ros/melodic/setup.bash \
+#     && source /root/.bashrc \
+#     && mkdir -p /root/catkin_ws/src \
+#     && cd /root/catkin_ws/src \
+#     && catkin_init_workspace \
+#     && cd /root/catkin_ws \
+#     && catkin_make \
+#     && source /root/catkin_ws/devel/setup.bash \
+#     && cd ~/catkin_ws/src \
+#     && git clone https://github.com/DaniFavoreto/IC-Faperj.git p3dxbot \
+#     && cd /root/catkin_ws/ \
+#     && catkin_make \
+#     && cd /root/catkin_ws/src/p3dxbot/src/scripts/ \
+#     && chmod +x gen_map_csv.py \
+#     && chmod +x gen_odom_csv.py \ 
+#     && chmod +x p3dxbot_goal.py \
+#     && chmod +x p3dx_teleop_key.py \
+#     && cd /root \
+#     && bash"
+
+# RUN /bin/bash -c echo \
+#     'source /opt/ros/melodic/setup.bash \
+#     && source /root/.bashrc \
+#     && mkdir -p /root/catkin_ws/src \
+#     && cd /root/catkin_ws/src \
+#     && catkin_init_workspace \
+#     && cd /root/catkin_ws \
+#     && catkin_make \
+#     && source /root/catkin_ws/devel/setup.bash \
+#     && cd ~/catkin_ws/src \
+#     && git clone https://github.com/DaniFavoreto/IC-Faperj.git p3dxbot \
+#     && cd /root/catkin_ws/ \
+#     && catkin_make \
+#     && cd /root/catkin_ws/src/p3dxbot/src/scripts/ \
+#     && chmod +x gen_map_csv.py \
+#     && chmod +x gen_odom_csv.py \ 
+#     && chmod +x p3dxbot_goal.py \
+#     && chmod +x p3dx_teleop_key.py \
+#     && cd /root'

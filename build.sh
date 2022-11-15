@@ -1,1 +1,1 @@
-docker build -t jontavpess/ros-project .
+docker build -t jontavpess/ros-project-image .

@@ -1,85 +1,18 @@
-FROM ubuntu:18.04
+FROM jontavpess/ros-project-image-base
 
-ENV DISTRO_CODENAME bionic
+RUN apt -y install git-all gedit
 
-RUN apt-get update
-RUN apt update
-RUN apt -y install curl gnupg2
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu ${DISTRO_CODENAME} main" > /etc/apt/sources.list.d/ros-melodic.list'
-#RUN sh -c \"echo 'deb http://packages.ros.org/ros/ubuntu bionic main' | tee /etc/apt/sources.list.d/ros-melodic.list \"
-#RUN sh -c \"echo 'deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main' | tee /etc/apt/sources.list.d/ros-melodic.list \"
-#RUN sh -c echo 'deb http://packages.ros.org/ros/ubuntu bionic main' > /etc/apt/sources.list.d/ros-melodic.list
-RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-RUN curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | apt-key add -
-#RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-RUN apt-get update 
+ENV DISPLAY=host.docker.internal:0.0
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=America/Sao_Paulo
+COPY ./bootstrap.sh /
 
-RUN apt-get -y install ros-melodic-desktop-full 
-RUN apt-get upgrade 
-    #
-RUN apt-get -y install ros-melodic-depthimage-to-laserscan 
-RUN apt-get -y install ros-melodic-slam-gmapping 
-RUN apt-get -y install ros-melodic-rtabmap-ros 
-RUN apt-get -y install ros-melodic-navigation 
-RUN apt-get -y install ros-melodic-explore-lite 
+RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+RUN echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
+RUN echo "export SVGA_VGPU10=0" >> ~/.bashrc
 
-##########################################################################
+# nvidia-docker hooks
+LABEL com.nvidia.volumes.needed="nvidia_driver"
+ENV PATH /usr/local/nvidia/bin:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
 
-# ENV PATH $PATH:/opt/ros/melodic/
-# SHELL ["/bin/bash", "-c"] 
-
-RUN /bin/bash -c echo 'source /opt/ros/melodic/setup.bash \
-    && source /root/.bashrc \
-    && mkdir -p /root/catkin_ws/src \
-    && cd /root/catkin_ws/src \
-    && catkin_init_workspace \
-    && cd /root/catkin_ws \
-    && catkin_make \
-    && echo /root/catkin_ws/devel/setup.bash \
-    && cd ~/catkin_ws/src \
-    && git clone https://github.com/DaniFavoreto/IC-Faperj.git p3dxbot \
-    && cd /root/catkin_ws/ \
-    && catkin_make \
-    && cd /root/catkin_ws/src/p3dxbot/src/scripts/ \
-    && chmod +x gen_map_csv.py \
-    && chmod +x gen_odom_csv.py \ 
-    && chmod +x p3dxbot_goal.py \
-    && chmod +x p3dx_teleop_key.py \
-    && cd /root'
-
-
-
-#RUN source /opt/ros/melodic/setup.bash
-# RUN source /root/.bashrc
-    # 
-# RUN mkdir -p /root/catkin_ws/src
-# WORKDIR /root/catkin_ws/src
-#RUN cd ~/catkin_ws/src 
-#RUN ls -a && sleep 10
-#SHELL ["/bin/sh", "-c"]
-# RUN catkin_init_workspace 
-#     # 
-# WORKDIR /root/catkin_ws/ 
-# #RUN cd ~/catkin_ws/ 
-# RUN catkin_make 
-# RUN echo "source ~/catkin_ws/devel/setup.bash" >> /root/.bashrc 
-# RUN source /root/.bashrc 
-#     # 
-# WORKDIR /root/catkin_ws/src
-# #RUN cd ~/catkin_ws/src
-# RUN apt install git-all
-# RUN git clone https://github.com/DaniFavoreto/IC-Faperj.git p3dxbot
-# WORKDIR /home/root/catkin_ws/ 
-# #RUN cd ~/catkin_ws/ 
-# RUN catkin_make 
-#     #
-# WORKDIR /home/root/catkin_ws/src/p3dxbot/src/scripts/ 
-# #RUN cd ~/catkin_ws/src/p3dxbot/src/scripts/ 
-# RUN chmod +x gen_map_csv.py 
-# RUN chmod +x gen_odom_csv.py 
-# RUN chmod +x p3dxbot_goal.py 
-# RUN chmod +x p3dx_teleop_key.py 
-# RUN cd ~
+CMD /bin/bash -c "/bootstrap.sh"

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#sudo -s
-
-source /opt/ros/melodic/setup.bash
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 
 source ~/.bashrc
 
@@ -16,7 +14,7 @@ cd ~/catkin_ws
 
 catkin_make
 
-source ~/catkin_ws/devel/setup.bash
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 
 source ~/.bashrc
 
@@ -35,9 +33,9 @@ chmod +x p3dxbot_goal.py
 chmod +x p3dx_teleop_key.py
 cd ~
 
-#exec "$@"
+exec "$@"
 
-while :; do sleep 2073600; done
+#while :; do sleep 2073600; done
 
 # echo source /opt/ros/melodic/setup.bash \
 # && source /root/.bashrc \
